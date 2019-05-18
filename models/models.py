@@ -39,8 +39,8 @@ class Ucenik(Korisnik):
 	__tablename__ = 'ucenik'
 
 	id = Column(Integer, ForeignKey('korisnik.id'), primary_key=True)
-	ime = Column(String(30))
-	prezime = Column(String(30))
+	ime = Column(String(30), nullable=False)
+	prezime = Column(String(30), nullable=False)
 
 	__mapper_args__ = {
 		'polymorphic_identity':'ucenik'
@@ -59,8 +59,8 @@ class Profesor(Korisnik):
 	__tablename__ = 'profesor'
 
 	id = Column(Integer, ForeignKey('korisnik.id'), primary_key=True)
-	ime = Column(String(30))
-	prezime = Column(String(30))
+	ime = Column(String(30), nullable=False)
+	prezime = Column(String(30), nullable=False)
 
 	__mapper_args__ = {
 		'polymorphic_identity':'profesor'

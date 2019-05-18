@@ -1,1 +1,1 @@
-from .general_dao import add_entity
+from .korisnik_dao import KorisnikDAO

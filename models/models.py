@@ -1,5 +1,8 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
+
+import datetime
 
 class Korisnik(Base):
 	__tablename__ = 'korisnik'
@@ -67,9 +70,22 @@ class Profesor(Korisnik):
 	}
 
 	def __init__(self, username, password, ime, prezime):
-		super(Ucenik, self).__init__(username, password)
+		super(Profesor, self).__init__(username, password)
 		self.ime = ime
 		self.prezime = prezime
 
 	def __repr__(self):
 		return f'<Profesor(id={self.id}, username={self.username}, ime={self.ime}, prezime={self.prezime})>'
+
+
+class Predmet(Base):
+	__tablename__ = 'predmet'
+
+	id = Column(Integer, primary_key=True)
+	naziv = Column(String(50), nullable=False)
+
+	def __init__(self, naziv):
+		self.naziv = naziv
+
+	def __repr__(self):
+		return f'<Predmet(id={self.id}, naziv={self.naziv})>'

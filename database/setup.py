@@ -4,11 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import config
 
 engine = create_engine('sqlite:///%s' % config.DATABASE, convert_unicode=True)
-Session = scoped_session(sessionmaker(autocommit=False,
-										autoflush=False,
-										bind=engine))
+Session = sessionmaker(bind=engine)
 Base = declarative_base()
-Base.query = Session.query_property()
 
 def init_db():
 	import models

@@ -18,6 +18,23 @@ if config.DATABASE_ENGINE == 'sqlite':
 	from sqlalchemy import event
 	event.listen(engine, 'connect', _fk_pragma_on_connect)
 
+
+from contextlib import contextmanager
+from utils import debug_print
+
+@contextmanager
+def session_scope():
+	session = Session()
+	try:
+		yield session
+		session.commit()
+	except Exception as e:
+		session.rollback()
+		debug_print('session_scope exception =', e)
+	finally:
+		session.close()
+
+
 def init_db():
 	import models
 	Base.metadata.create_all(bind=engine)

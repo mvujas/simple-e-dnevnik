@@ -13,5 +13,6 @@ try :
 		print(dao.get_by_username('b'))
 		print(dao.get_by_username('a'))
 		print(dao.get_all())
+		DAOManager.release(dao)
 except:
 	print('Greska')

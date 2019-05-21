@@ -20,7 +20,7 @@ class DAOManager:
 		return cls.__get_dao(KorisnikDAO, session)
 
 	@classmethod
-	def release_dao(cls, dao_object):
+	def release(cls, dao_object):
 		try:
 			cls.__daos[type(dao_object)].release(dao_object)
 		except:

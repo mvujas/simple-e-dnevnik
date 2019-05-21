@@ -1,14 +1,23 @@
-from database import Session
+from database import session_scope
 from models import Korisnik, Admin, Ucenik, Profesor
 
 from .general_dao import GeneralDAO
+from utils import check_type
 
 class KorisnikDAO(GeneralDAO):
-	def __init__(self):
-		super(KorisnikDAO, self).__init__()
-
-	def save(self, korisnik):
-		return self._add_update_entity(korisnik, Korisnik)
+	def add(self, korisnik):
+		check_type(korisnik, Korisnik)
+		self.session.add(korisnik)
 
 	def delete(self, korisnik):
-		return self._delete_entity(korisnik, Korisnik)
+		check_type(korisnik, Korisnik)
+		self.session.delete(korisnik)
+
+	def get_by_pk(self, primary_key):
+		return self.session.query(Korisnik).get(primary_key)
+
+	def get_by_username(self, username):
+		return self.session.query(Korisnik).filter(Korisnik.username == username).first() 
+
+	def get_all(self):
+		return self.session.query(Korisnik).all()

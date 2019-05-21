@@ -1,1 +1,1 @@
-from .korisnik_dao import KorisnikDAO
+from .dao_manager import DAOManager

@@ -1,2 +1,2 @@
-DATABASE_ENGINE = 'sqlite'
-DATABASE_CONNECTION_STRING = 'db.db'
+from .db_config import *
+from .project_config import *

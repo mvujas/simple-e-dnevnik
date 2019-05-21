@@ -1,5 +1,6 @@
 from database import Session
 from abc import ABC
+from utils import debug_print
 
 class GeneralDAO(ABC):
 	def _add_update_entity(self, entityClass, entity):
@@ -14,6 +15,7 @@ class GeneralDAO(ABC):
 		except Exception as e:
 			if session != None:
 				session.rollback()
+			debug_print('Exception(_add_update_entity) =', e)
 			return False
 		finally:
 			if session != None:
@@ -31,6 +33,7 @@ class GeneralDAO(ABC):
 		except Exception as e:
 			if session != None:
 				session.rollback()
+			debug_print('Exception(_delete_entity) =', e)
 			return False
 		finally:
 			if session != None:

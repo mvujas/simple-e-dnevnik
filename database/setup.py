@@ -3,10 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import config
 
-connection_url = '%s:///%s' % (
-	config.DATABASE_ENGINE, config.DATABASE_CONNECTION_STRING)
-
-engine = create_engine(connection_url, convert_unicode=True)
+engine = create_engine(config.DATABASE_CONNECTION_STRING, convert_unicode=True)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 

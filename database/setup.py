@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import config
 
 engine = create_engine(config.DATABASE_CONNECTION_STRING, convert_unicode=True)
-Session = sessionmaker(bind=engine, expire_on_commit=True)
+Session = sessionmaker(bind=engine, expire_on_commit=False)
 Base = declarative_base()
 
 if config.DATABASE_ENGINE == 'sqlite':
@@ -28,7 +28,7 @@ def session_scope():
 		session.commit()
 	except:
 		session.rollback()
-		debug_print('session_scope exception =', traceback.format_exc())
+		debug_print('session_scope exception traceback:\n', traceback.format_exc())
 		raise
 	finally:
 		session.close()

@@ -1,18 +1,8 @@
-from models import *
-from data_access_layer import DAOManager
-from database import init_db, session_scope
+from database import init_db
+from businesslayer import KorisnikLogic
 
 init_db()
-
-
-try :
-	with session_scope() as session:
-		dao = DAOManager.get_korisnik_dao(session)
-		dao.add(Admin('a', ''))
-		dao.add(Ucenik('pera', '', 'Pera', 'Peric'))
-		print(dao.get_by_username('b'))
-		print(dao.get_by_username('a'))
-		print(dao.get_all())
-		DAOManager.release(dao)
-except:
-	print('Greska')
+print(KorisnikLogic.register_user(username='pera', password='Milos123', uloga='ucenik', ime='  Pera', prezime='   Peric '))
+print(KorisnikLogic.register_user(username='pera', password='Milos123', uloga='ucenik', ime='  Pera', prezime='   Peric '))
+user = KorisnikLogic.authenticate_user(username='pera', password='  Milos123')
+print(user)

@@ -3,9 +3,10 @@ from abc import ABC
 from utils import debug_print
 
 class GeneralDAO(ABC):
-	def _add_update_entity(self, entityClass, entity):
-		if not isinstance(entity, entityClass):
-			raise ValueError(f'Passed entity is not an instance of {entityClass.__name__}')
+	def _add_update_entity(self, entity, *entityClasses):
+		if len(entityClasses) > 0 and not any(
+				map(lambda entityClass: isinstance(entity, entityClass), entityClasses)):
+			raise ValueError(f'Passed entity is not an instance of any of given entity classes')
 		session = None
 		try:
 			session = Session()
@@ -21,9 +22,10 @@ class GeneralDAO(ABC):
 			if session != None:
 				session.close()
 
-	def _delete_entity(self, entityClass, entity):
-		if not isinstance(entity, entityClass):
-			raise ValueError(f'Passed entity is not an instance of {entityClass.__name__}')
+	def _delete_entity(self, entity, *entityClasses):
+		if len(entityClasses) > 0 and not any(
+				map(lambda entityClass: isinstance(entity, entityClass), entityClasses)):
+			raise ValueError(f'Passed entity is not an instance of any of given entity classes')
 		session = None
 		try:
 			session = Session()

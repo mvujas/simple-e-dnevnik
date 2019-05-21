@@ -8,3 +8,4 @@ dao = DAOManager.get_korisnik_dao()
 admin = Admin('pera', '')
 dao.delete(admin)
 print(dao.save(admin))
+

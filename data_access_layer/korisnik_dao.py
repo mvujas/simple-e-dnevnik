@@ -8,7 +8,7 @@ class KorisnikDAO(GeneralDAO):
 		super(KorisnikDAO, self).__init__()
 
 	def save(self, korisnik):
-		return self._add_update_entity(Korisnik, korisnik)
+		return self._add_update_entity(korisnik, Korisnik)
 
 	def delete(self, korisnik):
-		return self._delete_entity(Korisnik, korisnik)
+		return self._delete_entity(korisnik, Korisnik)

@@ -89,3 +89,37 @@ class Predmet(Base):
 
 	def __repr__(self):
 		return f'<Predmet(id={self.id}, naziv={self.naziv})>'
+
+
+class Predaje(Base):
+	__tablename__ = 'predaje'
+
+	profesor_id = Column(Integer, ForeignKey('profesor.id', ondelete='CASCADE'), primary_key=True)
+	predmet_id = Column(Integer, ForeignKey('predmet.id', ondelete='CASCADE'), primary_key=True)
+
+	def __repr__(self):
+		return f'<Predaje()>'
+
+
+class Slusa(Base):
+	__tablename__ = 'slusa'
+
+	ucenik_id = Column(Integer, ForeignKey('ucenik.id', ondelete='CASCADE'), primary_key=True)
+	predmet_id = Column(Integer, ForeignKey('predmet.id', ondelete='CASCADE'), primary_key=True)
+	predaje_profesor_id = Column(Integer, ForeignKey('predaje.profesor_id', ondelete='SET NULL'))
+	predaje_predmet_id = Column(Integer, ForeignKey('predaje.predmet_id', ondelete='SET NULL'))
+
+	def __repr__(self):
+		return f'<Slusa()>'
+
+class Ocena(Base):
+	__tablename__ = 'ocena'
+
+	slusa_ucenik_id = Column(Integer, ForeignKey('slusa.ucenik_id', ondelete='CASCADE'), primary_key=True)
+	slusa_predmet_id = Column(Integer, ForeignKey('slusa.predmet_id', ondelete='CASCADE'), primary_key=True)
+	ocena_id = Column(Integer, primary_key=True)
+	datum = Column(Date, default=datetime.datetime.now)
+	vrednost = Column(Integer, nullable=False)
+
+	def __repr__(self):
+		return f'<Ocena()>'

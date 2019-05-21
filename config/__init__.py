@@ -1,1 +1,2 @@
-DATABASE = 'db.db'
+DATABASE_ENGINE = 'sqlite'
+DATABASE_CONNECTION_STRING = 'db.db'

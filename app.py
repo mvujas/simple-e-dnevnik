@@ -1,6 +1,6 @@
 from models import *
 from data_access_layer import KorisnikDAO
-from database import init_db, Session
+from database import init_db, Session, engine
 
 init_db()
 '''
@@ -31,9 +31,9 @@ mat = Predmet('matematika')
 prof = Profesor('perica', '', 'Pera', 'Peric')
 admin = Admin('admin', 'admin123')
 ucenik = Ucenik('marica', '', 'Mara', 'Maric')
-profMat = Predaje(prof, mat)
+#profMat = Predaje(prof, mat)
 
-lista = [mat, prof, admin, ucenik, profMat]
+lista = [mat, prof, admin, ucenik]
 
 print('Pre add_all: ', lista)
 session.add_all(lista)
@@ -50,3 +50,6 @@ prof.ime = 'Misa'
 session1 = Session()
 session1.delete(prof)
 session1.commit()
+
+for row in session1.execute('pragma foreign_keys;'):
+	print(row)

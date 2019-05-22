@@ -5,9 +5,11 @@ from utils import check_type
 
 class PredmetDAO(GeneralDAO):
 	def add(self, predmet):
+		check_type(predmet, Predmet)
 		self.session.add(predmet)
 
 	def delete(self, predmet):
+		check_type(predmet, Predmet)
 		self.session.delete(predmet)
 
 	def get_all(self):

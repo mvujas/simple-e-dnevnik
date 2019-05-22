@@ -1,4 +1,3 @@
-from database import session_scope
 from models import Korisnik, Admin, Ucenik, Profesor
 
 from .general_dao import GeneralDAO

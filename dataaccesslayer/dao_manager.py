@@ -1,10 +1,10 @@
-from .korisnik_dao import KorisnikDAO
 from utils.datatypes import ObjectPool
+from .korisnik_dao import KorisnikDAO
+from .predmet_dao import PredmetDAO
 
 class DAOManager:
-	__daos = {
-		KorisnikDAO: ObjectPool(KorisnikDAO)
-	}
+	__dao_types = [KorisnikDAO, PredmetDAO]
+	__daos = { dao_type: ObjectPool(dao_type) for dao_type in __dao_types }
 
 	@classmethod
 	def __get_dao(cls, dao_type, session):
@@ -18,6 +18,10 @@ class DAOManager:
 	@classmethod
 	def get_korisnik_dao(cls, session):
 		return cls.__get_dao(KorisnikDAO, session)
+
+	@classmethod
+	def get_predmet_dao(cls, session):
+		return cls.__get_dao(PredmetDAO, session)
 
 	@classmethod
 	def release(cls, dao_object):

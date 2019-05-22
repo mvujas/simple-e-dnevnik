@@ -60,6 +60,7 @@ class KorisnikLogic:
 			debug_print('Insufficient params passed to register_user\n', traceback.format_exc())
 			return False
 
+		dao = None
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
@@ -71,9 +72,13 @@ class KorisnikLogic:
 			raise
 		except:
 			return False
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)
 
 	@staticmethod
 	def authenticate_user(username, password):
+		dao = None
 		try:
 			username = username.strip()
 			password = password.strip()
@@ -89,3 +94,6 @@ class KorisnikLogic:
 					return None
 		except:
 			return None
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)

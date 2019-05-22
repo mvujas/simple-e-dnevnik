@@ -1,1 +1,1 @@
-from .korisnik_logic import KorisnikLogic
+from .korisnik_logic import KorisnikLogic, InvalidKorisnikInfoError

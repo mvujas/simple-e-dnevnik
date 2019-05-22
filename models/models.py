@@ -82,7 +82,7 @@ class Predmet(Base):
 	__tablename__ = 'predmet'
 
 	id = Column(Integer, primary_key=True)
-	naziv = Column(String(50), nullable=False)
+	naziv = Column(String(50), unique=True, nullable=False)
 
 	def __init__(self, naziv):
 		self.naziv = naziv

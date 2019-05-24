@@ -64,9 +64,9 @@ class KorisnikLogic:
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				if dao.get_by_username(korisnik.username) is not None:
+				if dao.get_korisnik_by_username(korisnik.username) is not None:
 					raise InvalidKorisnikInfoError('Vec postoji korisnik sa datim username-om')
-				dao.add(korisnik)
+				dao.add_korisnik(korisnik)
 			return True
 		except InvalidKorisnikInfoError:
 			raise
@@ -84,7 +84,7 @@ class KorisnikLogic:
 			password = password.strip()
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				user = dao.get_by_username(username)
+				user = dao.get_korisnik_by_username(username)
 				if user is None:
 					return None
 				if bcrypt.checkpw(password.encode(), user.password):

@@ -3,7 +3,7 @@ from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
 from utils import clear_screen
 
 class AdminPanel(KorisnikPanel):
-	ACTION_DICTIONARY = [
+	ACTION_DICTIONARY = KorisnikPanel.ACTION_DICTIONARY + [
 		('Dodaj ucenika', lambda korisnik: dodavanje_regularnog_korisnika('ucenik')),
 		('Dodaj profesora', lambda korisnik: dodavanje_regularnog_korisnika('profesor')),
 	]

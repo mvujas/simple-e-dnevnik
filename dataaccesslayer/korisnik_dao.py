@@ -20,3 +20,8 @@ class KorisnikDAO(GeneralDAO):
 
 	def get_all_korisnik(self):
 		return self.session.query(Korisnik).all()
+
+	def update_korisnik_attribute(self, korisnik, attribute, new_value):
+		check_type(korisnik, Korisnik)
+		self.session.add(korisnik)
+		setattr(korisnik, attribute, new_value)

@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
 from utils import clear_screen
+from .shared_functionality import change_username, change_password
 
 class KorisnikPanel(ABC):
 	# ACTION_DICTIONARY should be a list of (action name, action callback) pairs
 	# action callback is function that accepts instance of object Korisnik
-	ACTION_DICTIONARY = []
+	ACTION_DICTIONARY = [
+		('Promeni korisnicko ime', change_username),
+		('Promeni lozinku', change_password),	
+	]
 
 	__STARTING_ACTION_NUMBER = 1
 

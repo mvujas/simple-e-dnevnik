@@ -1,6 +1,7 @@
 from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
-import getpass
+from .shared_functionality import try_again
 from utils import clear_screen
+import getpass
 
 def login():
 	while True:
@@ -11,9 +12,7 @@ def login():
 		korisnik = KorisnikLogic.authenticate_user(username, lozinka)
 		if korisnik is None:
 			print(' * Niste uneli postojece ime i lozinku')
-			pokusati_ponovo = input('Zelite li da pokusate ponovo? [D/n] ').strip().upper() \
-								not in ['N', 'NE']
-			if not pokusati_ponovo:
+			if not try_again():
 				return None
 			clear_screen()
 		else:
@@ -31,9 +30,8 @@ def main_view():
 ---------------------------
 ''')
 	korisnik = login()
-	if korisnik is None:
-		return
-	korisnicki_panel(korisnik)
+	if korisnik is not None:
+		korisnicki_panel(korisnik)
 	print('Dovidjenja.')
 
 

@@ -77,6 +77,10 @@ class KorisnikLogic:
 				DAOManager.release(dao)
 
 	@staticmethod
+	def do_passwords_match(korisnik, password):
+		return bcrypt.checkpw(password.encode(), korisnik.password)
+
+	@staticmethod
 	def authenticate_user(username, password):
 		dao = None
 		try:
@@ -87,13 +91,49 @@ class KorisnikLogic:
 				user = dao.get_korisnik_by_username(username)
 				if user is None:
 					return None
-				if bcrypt.checkpw(password.encode(), user.password):
+				if KorisnikLogic.do_passwords_match(user, password):
 					session.refresh(user)
 					return user
 				else:
 					return None
 		except:
 			return None
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)
+			
+	@staticmethod
+	def change_username(korisnik, new_username):
+		new_username = new_username.strip()
+		dao = None
+		try:
+			KorisnikLogic.validate_username(new_username)
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				if dao.get_korisnik_by_username(new_username) is not None:
+					raise InvalidKorisnikInfoError('Vec postoji korisnik sa datim username-om')
+				dao.update_korisnik_attribute(korisnik, 'username', new_username)
+			return True
+		except InvalidKorisnikInfoError:
+			raise
+		except:
+			return False
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)
+
+	@staticmethod
+	def change_password(korisnik, new_password):
+		new_password = new_password.strip()
+		dao = None
+		try:
+			KorisnikLogic.validate_password(new_password)
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				dao.update_korisnik_attribute(korisnik, 'password', new_password)
+			return True
+		except:
+			return False
 		finally:
 			if dao is not None:
 				DAOManager.release(dao)

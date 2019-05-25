@@ -27,7 +27,7 @@ class KorisnikLogic:
 
 	@staticmethod
 	def validate_password(password):
-		if len(password) < config.MINIMUM_USERNAME_LENGTH:
+		if len(password) < config.MINIMUM_PASSWORD_LENGTH:
 			raise InvalidKorisnikInfoError('Sifra mora biti duzine barem %d' % config.MINIMUM_PASSWORD_LENGTH)
 		if not re.match('^[-_.@\\d\\w]*$', password):
 			raise InvalidKorisnikInfoError('Sifra moze sadrzati samo slova, brojeve i znakove -, _, ., @')

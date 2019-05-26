@@ -1,9 +1,11 @@
 import argparse
-from database import init_db
-from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
+from database import init_db, session_scope
+from businesslayer import KorisnikLogic, InvalidKorisnikInfoError, RazredLogic
 import getpass
 from config import LOCAL_DATABASE_NAME
 import os
+from models import *
+import config
 
 def main():
 	parser = argparse.ArgumentParser(description='Initialize database')
@@ -50,7 +52,16 @@ def main():
 		else:
 			print('Doslo je do greske prilikom dodavanja administratorovog naloga')
 			raise Exception()
-		
+
+		razredi_ok = True
+		for godina in range(config.MINIMUM_RAZRED, config.MAXIMUM_RAZRED + 1):
+			razredi_ok &= RazredLogic.add_razred(godina)
+		if not razredi_ok:
+			print('Doslo je do greske prilikom dodavanja razreda')
+			raise Exception()
+
+		print('Razredi su uspesno dodati')
+
 		print('Sistem je inicijalizovan i spreman za koriscenje')
 	except:
 		print('Doslo je do greske prilikom inicijalizacije sistema')

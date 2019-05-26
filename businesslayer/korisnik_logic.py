@@ -2,10 +2,12 @@ from dataaccesslayer import DAOManager
 from utils import debug_print
 from models import *
 from database import session_scope
+from .razred_logic import RazredLogic
 import traceback
 import bcrypt
 import config
 import re
+
 
 class InvalidKorisnikInfoError(Exception):
 	pass
@@ -53,7 +55,13 @@ class KorisnikLogic:
 				if uloga == 'profesor':
 					korisnik = Profesor(username, password, ime, prezime)
 				else:
-					korisnik = Ucenik(username, password, ime, prezime)
+					godina = params['razred']
+					if not isinstance(godina, int):
+						raise InvalidKorisnikInfoError('Razred mora biti ceo broj')
+					razred = RazredLogic.get_razred_by_godina(godina)
+					if razred is None:
+						raise InvalidKorisnikInfoError('Uneti razred ne postoji')
+					korisnik = Ucenik(username, password, ime, prezime, razred)
 		except InvalidKorisnikInfoError:
 			raise
 		except:

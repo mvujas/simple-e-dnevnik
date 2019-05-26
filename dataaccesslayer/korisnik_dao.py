@@ -1,4 +1,4 @@
-from models import Korisnik, Admin, Ucenik, Profesor
+from models import Korisnik, Admin, Ucenik, Profesor, Razred
 
 from .general_dao import GeneralDAO
 from utils import check_type
@@ -20,6 +20,10 @@ class KorisnikDAO(GeneralDAO):
 
 	def get_all_korisnik(self):
 		return self.session.query(Korisnik).all()
+
+	def get_all_ucenik_from_razred(self, razred):
+		check_type(razred, Razred)
+		return self.session.query(Ucenik).filter(Ucenik.razred_id == razred.id).all()
 
 	def update_korisnik_attribute(self, korisnik, attribute, new_value):
 		check_type(korisnik, Korisnik)

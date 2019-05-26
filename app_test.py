@@ -1,0 +1,21 @@
+from database import session_scope
+from models import *
+from businesslayer import *
+'''
+import logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+'''
+
+print(KorisnikLogic.register_user(username='ABCD1',password='admin12345',ime='ab',prezime='be',uloga='ucenik',razred=5))
+print(KorisnikLogic.register_user(username='ABCD2',password='admin12345',ime='ab',prezime='be',uloga='ucenik',razred=4))
+print(KorisnikLogic.register_user(username='ABCD3',password='admin12345',ime='ab',prezime='be',uloga='ucenik',razred=4))
+
+razredi = RazredLogic.get_all_razred()
+
+print(razredi)
+
+print(RazredLogic.get_all_ucenik_from_godina(5))
+print(RazredLogic.get_all_ucenik_from_godina(4))
+print(RazredLogic.get_all_ucenik_from_godina(3))
+

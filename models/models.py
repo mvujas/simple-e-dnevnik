@@ -5,6 +5,26 @@ from sqlalchemy.schema import PrimaryKeyConstraint, ForeignKeyConstraint, Unique
 
 import datetime
 
+class Razred(Base):
+	__tablename__ = 'razred'
+
+	id = Column(Integer)
+	godina = Column(Integer, nullable=False)
+	ucenici = relationship('Ucenik', back_populates='razred')
+
+	__table_args__ = (
+		PrimaryKeyConstraint(id),
+		UniqueConstraint(godina),
+		{}
+	)
+
+	def __init__(self, godina):
+		self.godina = godina
+
+	def __repr__(self):
+		return f'<Razred(godina={self.godina})>'
+
+
 class Korisnik(Base):
 	__tablename__ = 'korisnik'
 
@@ -57,9 +77,12 @@ class Ucenik(Korisnik):
 	id = Column(Integer)
 	ime = Column(String(30), nullable=False)
 	prezime = Column(String(30), nullable=False)
+	razred_id = Column(Integer)
+	razred = relationship('Razred', back_populates='ucenici', lazy='joined')
 
 	__table_args__ = (
 		ForeignKeyConstraint([id], [Korisnik.id]),
+		ForeignKeyConstraint([razred_id], [Razred.id]),
 		PrimaryKeyConstraint(id),
 		{}
 	)
@@ -68,13 +91,19 @@ class Ucenik(Korisnik):
 		'polymorphic_identity':'ucenik'
 	}		
 
-	def __init__(self, username, password, ime, prezime):
+	def __init__(self, username, password, ime, prezime, razred):
 		super(Ucenik, self).__init__(username, password)
 		self.ime = ime
 		self.prezime = prezime
+		if isinstance(razred, int):
+			self.razred_id = razred
+		elif isinstance(razred, Razred):
+			self.razred = razred
+		else:
+			raise ValueError('Cannot accept type of argument razred')
 
 	def __repr__(self):
-		return f'<Ucenik(id={self.id}, username={self.username}, ime={self.ime}, prezime={self.prezime}))>'
+		return f'<Ucenik(id={self.id}, username={self.username}, ime={self.ime}, prezime={self.prezime}, razred={self.razred})>'
 
 
 class Profesor(Korisnik):

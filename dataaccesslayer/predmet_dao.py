@@ -13,7 +13,7 @@ class PredmetDAO(GeneralDAO):
 		self.session.delete(predmet)
 
 	def get_all_predmet(self):
-		return self.session(Predmet).all()
+		return self.session.query(Predmet).all()
 
 	def get_predmet_by_pk(self, primary_key):
-		return self.session(Predmet).get(primary_key)
+		return self.session.query(Predmet).get(primary_key)

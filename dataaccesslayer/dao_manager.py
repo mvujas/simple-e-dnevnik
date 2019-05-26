@@ -1,9 +1,10 @@
 from utils.datatypes import ObjectPool
 from .korisnik_dao import KorisnikDAO
 from .predmet_dao import PredmetDAO
+from .razred_dao import RazredDAO
 
 class DAOManager:
-	__dao_types = [KorisnikDAO, PredmetDAO]
+	__dao_types = [KorisnikDAO, PredmetDAO, RazredDAO]
 	__daos = { dao_type: ObjectPool(dao_type) for dao_type in __dao_types }
 
 	@classmethod
@@ -22,6 +23,10 @@ class DAOManager:
 	@classmethod
 	def get_predmet_dao(cls, session):
 		return cls.__get_dao(PredmetDAO, session)
+
+	@classmethod
+	def get_razred_dao(cls, session):
+		return cls.__get_dao(RazredDAO, session)
 
 	@classmethod
 	def release(cls, dao_object):

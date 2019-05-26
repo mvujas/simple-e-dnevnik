@@ -24,7 +24,7 @@ class RazredLogic:
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_razred_dao(session)
-				return dao.get_razred_by_pk(primay_key)
+				return dao.get_razred_by_pk(primary_key)
 		except:
 			return None
 		finally:

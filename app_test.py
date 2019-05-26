@@ -19,3 +19,12 @@ print(RazredLogic.get_all_ucenik_from_godina(5))
 print(RazredLogic.get_all_ucenik_from_godina(4))
 print(RazredLogic.get_all_ucenik_from_godina(3))
 
+print(RazredLogic.get_razred_by_godina(1))
+print(RazredLogic.get_razred_by_godina(2))
+print(RazredLogic.get_razred_by_godina(3))
+print(RazredLogic.get_razred_by_godina(4))
+
+print(RazredLogic.get_razred_by_pk(5))
+print(RazredLogic.get_razred_by_pk(6))
+print(RazredLogic.get_razred_by_pk(7))
+print(RazredLogic.get_razred_by_pk(8))

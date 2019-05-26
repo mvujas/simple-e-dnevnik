@@ -145,3 +145,44 @@ class KorisnikLogic:
 		finally:
 			if dao is not None:
 				DAOManager.release(dao)
+
+	@staticmethod
+	def get_korisnik_by_username(username):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				return dao.get_korisnik_by_username(username)
+		except:
+			return None
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)
+
+	@staticmethod
+	def get_korisnik_by_pk(primary_key):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				return dao.get_korisnik_by_username(primary_key)
+		except:
+			return None
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)		
+
+	@staticmethod
+	def get_all_korisnik():
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				korisnici = dao.get_all_korisnik()
+				if korisnici is None:
+					return { korisnik.id: korisnik for korisnik in korisnici }
+		except:
+			return None
+		finally:
+			if dao is not None:
+				DAOManager.release(dao)

@@ -28,13 +28,27 @@ def dodavanje_regularnog_korisnika(uloga):
 		ime = input('Ime: ')
 		prezime = input('Prezime: ')
 
+		args = {
+			'username': username,
+			'password': password,
+			'ime': ime,
+			'prezime': prezime,
+			'uloga': uloga
+		}
+
+		if uloga == 'ucenik':
+			razred = None
+			while True:
+				razred = input('Razred: ').strip()
+				if razred.isdigit():
+					break
+				else:
+					print(' * Razred mora biti ceo broj!')
+			razred = int(razred)
+			args['razred'] = razred
+
 		try:
-			KorisnikLogic.register_user(
-				username=username, 
-				password=password,
-				ime=ime,
-				prezime=prezime, 
-				uloga=uloga)
+			KorisnikLogic.register_user(**args)
 			print('{} je uspesno dodat'.format(uloga.title()))
 			return
 		except InvalidKorisnikInfoError as e:

@@ -21,6 +21,15 @@ class Razred(Base):
 	def __init__(self, godina):
 		self.godina = godina
 
+	def __eq__(self, obj):
+		if self is obj:
+			return True
+		if obj is None:
+			return False
+		if not isinstance(obj, Razred):
+			return False
+		return self.id == obj.id
+
 	def __repr__(self):
 		return f'<Razred(godina={self.godina})>'
 
@@ -138,7 +147,8 @@ class Predmet(Base):
 
 	id = Column(Integer)
 	naziv = Column(String(50), nullable=False)
-	profesori = relationship('Profesor', secondary='predaje')
+	profesori = relationship('Profesor', secondary='predaje', lazy='subquery')
+	razredi = relationship('Razred', secondary='dozvoljenirazredi', lazy='subquery')
 
 	__table_args__ = (
 		PrimaryKeyConstraint(id),
@@ -147,10 +157,44 @@ class Predmet(Base):
 	)
 
 	def __init__(self, naziv):
+		self.razredi = []
 		self.naziv = naziv
 
 	def __repr__(self):
 		return f'<Predmet(id={self.id}, naziv={self.naziv})>'
+
+
+class DozvoljeniRazredi(Base):
+	__tablename__ = 'dozvoljenirazredi'
+
+	razred_id = Column(Integer)
+	predmet_id = Column(Integer)
+	razred = relationship('Razred', lazy='joined')
+	predmet = relationship('Predmet', lazy='joined')
+
+	__table_args__ = (
+		ForeignKeyConstraint([razred_id], [Razred.id]),
+		ForeignKeyConstraint([predmet_id], [Predmet.id]),
+		PrimaryKeyConstraint(razred_id, predmet_id),
+		{}
+	)
+
+	def __init__(self, razred, predmet):
+		if isinstance(razred, Razred):
+			self.razred = razred
+		elif isintance(razred, int):
+			self.razred_id = razred
+		else:
+			raise ValueError('Cannot accept type of argument razred')
+		if isinstance(predmet, Predmet):
+			self.predmet = predmet
+		elif isintance(predmet, int):
+			self.predmet_id = predmet
+		else:
+			raise ValueError('Cannot accept type of argument predmet')
+
+	def __repr__(self):
+		return f'<DozvoljeniRazredi()>'
 
 
 class Predaje(Base):

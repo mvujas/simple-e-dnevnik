@@ -1,11 +1,16 @@
-from .korisnik_panel import KorisnikPanel
-from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
+from businesslayer import KorisnikLogic, InvalidKorisnikInfoError, PredmetLogic
 from utils import clear_screen
+from prettytable import PrettyTable
+from .korisnik_panel import KorisnikPanel
+from .shared_functionality import try_again
 
 class AdminPanel(KorisnikPanel):
 	ACTION_DICTIONARY = KorisnikPanel.ACTION_DICTIONARY + [
 		('Dodaj ucenika', lambda korisnik: dodavanje_regularnog_korisnika('ucenik')),
 		('Dodaj profesora', lambda korisnik: dodavanje_regularnog_korisnika('profesor')),
+		('Dodaj predmet', lambda korisnik: dodavanje_predmeta()),
+		('Prikazi predmete', lambda korisnik: prikaz_predmeta()),
+		
 	]
 
 	@property
@@ -53,7 +58,38 @@ def dodavanje_regularnog_korisnika(uloga):
 			return
 		except InvalidKorisnikInfoError as e:
 			print(' * Greska:', e)
-			pokusati_ponovo = input('Zelite li da pokusate ponovo? [D/n] ').strip().upper() \
-								not in ['N', 'NE']
-			if not pokusati_ponovo:
+			if not try_again():
 				return
+
+
+def dodavanje_predmeta():
+	while True:
+		clear_screen()
+		print(' === Dodavanje predmeta ===')
+		print(' *** Napomena: Svi predmeti moraju imati razlicito ime ***')
+		naziv = input('Naziv: ')
+		success = PredmetLogic.add_predmet(naziv)
+		if success:
+			print('Predmet je uspesno dodat')
+			return
+		else:
+			print('''\
+ * Doslo je do greske prilikom dodavanja predmeta,
+   proverite da li vec postoji predmet sa datim imenom\
+''')
+			if not try_again():
+				return
+
+
+def prikaz_predmeta():
+	clear_screen()
+	predmeti = PredmetLogic.get_all_predmet()
+	print(' === Prikaz predmeta ===')
+	if predmeti is None:
+		print('Doslo je do greske prilikom ucitavanja predmeta')
+	else:
+		table = PrettyTable(['ID', 'NAZIV', 'DOZVOLJENI RAZREDI'])
+		for id, predmet in predmeti.items():
+			razredi = ', '.join(map(lambda razred: str(razred.godina), predmet.razredi))
+			table.add_row([str(id), predmet.naziv, razredi])
+		print(table)

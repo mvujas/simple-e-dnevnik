@@ -1,5 +1,5 @@
 from models import Korisnik, Admin, Ucenik, Profesor, Razred
-
+from sqlalchemy import inspect
 from .general_dao import GeneralDAO
 from utils import check_type
 
@@ -27,5 +27,11 @@ class KorisnikDAO(GeneralDAO):
 
 	def update_korisnik_attribute(self, korisnik, attribute, new_value):
 		check_type(korisnik, Korisnik)
-		self.session.add(korisnik)
+		if inspect(korisnik).detached:
+			self.session.add(korisnik)
 		setattr(korisnik, attribute, new_value)
+
+	def get_all_korisnik_from_subclass(self, subclass):
+		if not issubclass(subclass, Korisnik):
+			return ValueError('Passed class must be subclass of Korisnik')
+		return self.session.query(subclass).all()

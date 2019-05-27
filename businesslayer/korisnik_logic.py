@@ -8,7 +8,6 @@ import bcrypt
 import config
 import re
 
-
 class InvalidKorisnikInfoError(Exception):
 	pass
 
@@ -173,16 +172,34 @@ class KorisnikLogic:
 				DAOManager.release(dao)		
 
 	@staticmethod
-	def get_all_korisnik():
+	def __get_all_korisnik(korisnik_dao_call):
 		dao = None
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				korisnici = dao.get_all_korisnik()
+				korisnici = korisnik_dao_call(dao)
 				if korisnici is None:
+					return None
+				else:
 					return { korisnik.id: korisnik for korisnik in korisnici }
 		except:
 			return None
 		finally:
 			if dao is not None:
 				DAOManager.release(dao)
+
+	@staticmethod
+	def get_all_korisnik():
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik())
+
+	@staticmethod
+	def get_all_ucenik():
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Ucenik))
+
+	@staticmethod
+	def get_all_profesor():
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Profesor))
+
+	@staticmethod
+	def get_all_admin():
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Admin))	

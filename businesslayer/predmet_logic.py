@@ -15,8 +15,7 @@ class PredmetLogic:
 		except:
 			return False
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def get_all_predmet():
@@ -32,8 +31,19 @@ class PredmetLogic:
 		except:
 			return None
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
+
+	@staticmethod
+	def get_predmet_by_pk(primary_key):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				return dao.get_predmet_by_pk(primary_key)
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)
 
 	@staticmethod
 	def add_razreds_to_predmet(predmet, *razredi):
@@ -53,6 +63,17 @@ class PredmetLogic:
 			return False
 		finally:
 			for dao in daos.values():
-				if dao is not None:
-					DAOManager.release(dao)
+				DAOManager.release(dao)
 
+	@staticmethod
+	def update_predmet_name(predmet, naziv):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				dao.update_predmet_attribute(predmet, 'naziv', naziv)
+			return True
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)		

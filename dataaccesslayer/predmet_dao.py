@@ -27,3 +27,9 @@ class PredmetDAO(GeneralDAO):
 		if inspect(predmet).detached:
 			self.session.add(predmet)
 		predmet.razredi.append(razred)	
+
+	def update_predmet_attribute(self, predmet, attribute, new_value):
+		check_type(predmet, Predmet)
+		if inspect(predmet).detached:
+			self.session.add(predmet)
+		setattr(predmet, attribute, new_value)

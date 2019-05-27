@@ -30,6 +30,8 @@ class DAOManager:
 
 	@classmethod
 	def release(cls, dao_object):
+		if dao_object is None:
+			return
 		try:
 			cls.__daos[type(dao_object)].release(dao_object)
 		except:

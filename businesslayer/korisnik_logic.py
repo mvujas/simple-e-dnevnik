@@ -80,8 +80,7 @@ class KorisnikLogic:
 		except:
 			return False
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def do_passwords_match(korisnik, password):
@@ -106,8 +105,7 @@ class KorisnikLogic:
 		except:
 			return None
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 			
 	@staticmethod
 	def change_username(korisnik, new_username):
@@ -126,8 +124,7 @@ class KorisnikLogic:
 		except:
 			return False
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def change_password(korisnik, new_password):
@@ -142,8 +139,7 @@ class KorisnikLogic:
 		except:
 			return False
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def get_korisnik_by_username(username):
@@ -155,8 +151,7 @@ class KorisnikLogic:
 		except:
 			return None
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def get_korisnik_by_pk(primary_key):
@@ -168,8 +163,7 @@ class KorisnikLogic:
 		except:
 			return None
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)		
+			DAOManager.release(dao)		
 
 	@staticmethod
 	def __get_all_korisnik(korisnik_dao_call):
@@ -185,8 +179,7 @@ class KorisnikLogic:
 		except:
 			return None
 		finally:
-			if dao is not None:
-				DAOManager.release(dao)
+			DAOManager.release(dao)
 
 	@staticmethod
 	def get_all_korisnik():

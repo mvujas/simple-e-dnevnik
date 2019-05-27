@@ -1,5 +1,5 @@
-from models import Predmet, Razred
-from sqlalchemy import inspect
+from models import Predmet, Razred, DozvoljeniRazredi
+from sqlalchemy import inspect, and_
 from .general_dao import GeneralDAO
 from utils import check_type
 
@@ -26,7 +26,16 @@ class PredmetDAO(GeneralDAO):
 		check_type(razred, Razred)
 		if inspect(predmet).detached:
 			self.session.add(predmet)
-		predmet.razredi.append(razred)	
+		if razred not in predmet.razredi:
+			predmet.razredi.append(razred)	
+
+	def remove_razred_predmet_relation(self, predmet, razred):
+		check_type(predmet, Predmet)
+		check_type(razred, Razred)
+		if inspect(predmet).detached:
+			self.session.add(predmet)
+		if razred in predmet.razredi:
+			predmet.razredi.remove(razred)
 
 	def update_predmet_attribute(self, predmet, attribute, new_value):
 		check_type(predmet, Predmet)

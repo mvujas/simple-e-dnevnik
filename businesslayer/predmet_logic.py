@@ -46,7 +46,7 @@ class PredmetLogic:
 			DAOManager.release(dao)
 
 	@staticmethod
-	def add_razreds_to_predmet(predmet, *razredi):
+	def set_razreds_to_predmet(predmet, *razredi):
 		for razred in razredi:
 			check_type(razred, int)
 		razredi = list(set(razredi))
@@ -58,6 +58,12 @@ class PredmetLogic:
 				for razred in razredi:
 					daos['predmet'].add_razred_to_predmet(predmet, 
 						daos['razred'].get_razred_by_godina(razred))
+				razredi_to_remove = []
+				for razred_obj in predmet.razredi:
+					if razred_obj.godina not in razredi:
+						razredi_to_remove.append(razred_obj)
+				for razred_to_remove in razredi_to_remove:
+					daos['predmet'].remove_razred_predmet_relation(predmet, razred_to_remove)
 			return True
 		except:
 			return False

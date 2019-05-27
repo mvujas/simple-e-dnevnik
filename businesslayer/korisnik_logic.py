@@ -154,12 +154,12 @@ class KorisnikLogic:
 			DAOManager.release(dao)
 
 	@staticmethod
-	def get_korisnik_by_pk(primary_key):
+	def get_korisnik_by_pk(primary_key): # doesn't work with subclasses of korisnik...
 		dao = None
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				return dao.get_korisnik_by_username(primary_key)
+				return dao.get_korisnik_by_pk(primary_key)
 		except:
 			return None
 		finally:

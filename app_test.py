@@ -53,6 +53,10 @@ PredmetLogic.set_razreds_to_predmet(predmet, 1, 3, 2, 2, 8)
 
 for p in predmeti.values():
 	print(p, p.razredi)
-'''
+
 
 print(KorisnikLogic.get_korisnik_by_pk(2))
+'''
+from views import PredmetList
+
+PredmetList()

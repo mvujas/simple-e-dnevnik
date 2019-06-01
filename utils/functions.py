@@ -6,3 +6,6 @@ def check_type(instance, instance_type):
 
 def clear_screen():
 	os.system('cls' if os.name=='nt' else 'clear')
+
+def pretty_text_format(text):
+	return ' '.join(text.strip().split())

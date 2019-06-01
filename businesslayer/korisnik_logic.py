@@ -2,14 +2,12 @@ from dataaccesslayer import DAOManager
 from utils import debug_print
 from models import *
 from database import session_scope
+from .exceptions import UpdateInfoError, InvalidKorisnikInfoError
 from .razred_logic import RazredLogic
 import traceback
 import bcrypt
 import config
 import re
-
-class InvalidKorisnikInfoError(Exception):
-	pass
 
 class KorisnikLogic:
 	@staticmethod
@@ -244,3 +242,20 @@ class KorisnikLogic:
 	def get_ucenik_by_pk(primary_key):
 		return KorisnikLogic.__get_korisnik_by_pk(
 			lambda dao, id: dao.get_ucenik_by_pk(id), primary_key)
+
+	@staticmethod
+	def add_profesor_predmet_relation(profesor, predmet):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				if predmet in profesor.predmeti:
+					raise UpdateInfoError('Profesor vec predaje uneti predmet')
+				dao.add_predmet_to_profesor(profesor, predmet)
+			return True
+		except UpdateInfoError:
+			raise
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)

@@ -4,7 +4,7 @@ import getpass
 
 def try_again():
 	return input('Zelite li da pokusate ponovo? [D/n] ').strip().upper() not in ['N', 'NE']
-	
+
 
 def change_username(korisnik):
 	while True:
@@ -55,3 +55,9 @@ def dozvoljeni_razredi_str(predmet):
 	if len(razredi) == 0:
 		razredi = '/'
 	return razredi		
+
+def predmeti_profesora_str(profesor):
+	predmeti = ', '.join(map(lambda predmet: predmet.naziv, profesor.predmeti))
+	if len(predmeti) == 0:
+		predmeti = '/'
+	return predmeti

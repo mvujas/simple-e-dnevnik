@@ -211,6 +211,8 @@ class Predaje(Base):
 
 	profesor_id = Column(Integer)
 	predmet_id = Column(Integer)
+	profesor = relationship('Profesor')
+	predmet = relationship('Predmet')
 
 	__table_args__ = (
 		ForeignKeyConstraint([profesor_id], [Profesor.id]), # add on delete cascade
@@ -218,6 +220,20 @@ class Predaje(Base):
 		PrimaryKeyConstraint(profesor_id, predmet_id),
 		{}
 	)
+
+	def __init__(self, profesor, predmet):
+		if isinstance(profesor, Profesor):
+			self.profesor = profesor
+		elif isintance(profesor, int):
+			self.profesor_id = profesor
+		else:
+			raise ValueError('Cannot accept type of argument profesor')
+		if isinstance(predmet, Predmet):
+			self.predmet = predmet
+		elif isintance(predmet, int):
+			self.predmet_id = predmet
+		else:
+			raise ValueError('Cannot accept type of argument predmet')
 
 	def __repr__(self):
 		return f'<Predaje()>'

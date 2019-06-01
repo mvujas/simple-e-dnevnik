@@ -1,4 +1,4 @@
-from models import Korisnik, Admin, Ucenik, Profesor, Razred
+from models import *
 from sqlalchemy import inspect
 from sqlalchemy.orm import joinedload
 from .general_dao import GeneralDAO
@@ -43,3 +43,8 @@ class KorisnikDAO(GeneralDAO):
 		if inspect(korisnik).detached:
 			self.session.add(korisnik)
 		setattr(korisnik, attribute, new_value)
+
+	def add_predmet_to_profesor(self, profesor, predmet):
+		check_type(profesor, Profesor)
+		check_type(predmet, Predmet)
+		self.session.add(Predaje(profesor, predmet))

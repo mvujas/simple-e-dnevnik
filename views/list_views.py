@@ -1,13 +1,7 @@
 from businesslayer import PredmetLogic, KorisnikLogic
 from .prikaz_view import ListAllView
-from .shared_functionality import dozvoljeni_razredi_str		
-from .entity_views import AdminPredmetView, AdminProfesorView
-
-def predmeti_profesora_str(profesor):
-	predmeti = ', '.join(map(lambda predmet: predmet.naziv, profesor.predmeti))
-	if len(predmeti) == 0:
-		predmeti = '/'
-	return predmeti
+from .shared_functionality import dozvoljeni_razredi_str, predmeti_profesora_str
+from .entity_views import AdminPredmetView, AdminProfesorView, AdminUcenikView
 
 class AdminPredmetList(ListAllView):
 	list_heading = ' === Prikaz svih predmeta ==='
@@ -26,7 +20,7 @@ class AdminPredmetList(ListAllView):
 
 	def list_supplier(self):
 		return PredmetLogic.get_all_predmet()
-
+		
 class AdminUcenikList(ListAllView):
 	list_heading = ' === Prikaz svih ucenika ==='
 	table_mapping = [
@@ -37,6 +31,8 @@ class AdminUcenikList(ListAllView):
 	list_sortings = {
 		'default': (lambda ucenik: ucenik.id, False),
 	}
+	prikaz_pojedinacnog = lambda ucenik: AdminUcenikView(
+		lambda: KorisnikLogic.get_ucenik_by_pk(ucenik.id))
 
 	def list_supplier(self):
 		return KorisnikLogic.get_all_ucenik()

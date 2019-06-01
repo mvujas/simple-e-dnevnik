@@ -1,5 +1,5 @@
 from models import Predmet, Razred, DozvoljeniRazredi, Profesor, Predaje
-from sqlalchemy import inspect, and_
+from sqlalchemy import inspect, and_, func
 from sqlalchemy.orm import joinedload
 from .general_dao import GeneralDAO
 from utils import check_type
@@ -24,7 +24,7 @@ class PredmetDAO(GeneralDAO):
 			self.session
 			.query(Predmet)
 			.options(joinedload(Predmet.razredi))
-			.filter(Predmet.naziv == name)
+			.filter(func.lower(Predmet.naziv) == func.lower(name))
 			.first()
 		)
 
@@ -60,28 +60,10 @@ class PredmetDAO(GeneralDAO):
 			.all()
 		)
 
-
 	def add_razred_to_predmet(self, predmet, razred):
 		check_type(predmet, Predmet)
 		check_type(razred, Razred)
-		if inspect(predmet).detached:
-			if predmet.id is not None:
-				predmet = self.get_predmet_by_pk(predmet.id) # eager load predmet
-			else:
-				self.session.add(predmet)
-		if razred not in predmet.razredi:
-			predmet.razredi.append(razred)	
-
-	def remove_razred_predmet_relation(self, predmet, razred):
-		check_type(predmet, Predmet)
-		check_type(razred, Razred)
-		if inspect(predmet).detached:
-			if predmet.id is not None:
-				predmet = self.get_predmet_by_pk(predmet.id)
-			else:
-				self.session.add(predmet)
-		if razred in predmet.razredi:
-			predmet.razredi.remove(razred)
+		self.session.add(DozvoljeniRazredi(razred, predmet))
 
 	def update_predmet_attribute(self, predmet, attribute, new_value):
 		check_type(predmet, Predmet)

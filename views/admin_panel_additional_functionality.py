@@ -1,5 +1,5 @@
 from businesslayer import KorisnikLogic, InvalidKorisnikInfoError, PredmetLogic, UpdateInfoError
-from utils import clear_screen
+from utils import clear_screen, pretty_text_format
 from prettytable import PrettyTable
 from .shared_functionality import try_again
 
@@ -92,5 +92,35 @@ def promena_prezimena_regularnog_korisnika(korisnik):
 			print(' * Doslo je do greske prilikom promene prezimena korisnika')
 	except InvalidKorisnikInfoError as e:
 		print(' * Greska:', e)
+	input()
+
+def dodavanje_razreda_predmetu(predmet):
+	razred = input('Razred: ').strip()
+	if not razred.isdigit():
+		print('Razred mora biti ceo broj')
+	else:
+		razred_godina = int(razred)
+		try:
+			if PredmetLogic.add_predmet_razred_relation(predmet, razred_godina):
+				print('Razred je uspesno dodat predmetu')
+			else:
+				print(' * Doslo je do greske prilikom dodavanja razreda predmetu')
+		except UpdateInfoError as e:
+			print(' * Greska:', e)
+	input()
+
+def dodavanje_predmeta_profesoru(profesor):
+	naziv_predmeta = pretty_text_format(input('Naziv predmeta: '))
+	predmet = PredmetLogic.get_predmet_by_naziv(naziv_predmeta)
+	if predmet is None:
+		print(' * Ne postoji predmet sa unetim imenom')
+	else:
+		try:
+			if KorisnikLogic.add_profesor_predmet_relation(profesor, predmet):
+				print('Predmet je uspesno dodat profesoru')
+			else:
+				print(' * Doslo je do greske prilikom dodavanja predmeta profesoru')
+		except UpdateInfoError as e:
+			print(' * Greska:', e)
 	input()
 

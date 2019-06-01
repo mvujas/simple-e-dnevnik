@@ -28,7 +28,22 @@ class PredmetLogic:
 				if predmeti is None:
 					return None
 				else:
+					for predmet in predmeti:
+						predmet.razredi.sort(key=lambda razred: razred.godina)
 					return { predmet.id: predmet for predmet in predmeti }
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)
+
+	@staticmethod
+	def get_predmet_by_naziv(naziv):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				predmet = dao.get_predmet_by_name(naziv)
+				return predmet
 		except:
 			return None
 		finally:
@@ -40,32 +55,28 @@ class PredmetLogic:
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_predmet_dao(session)
-				return dao.get_predmet_by_pk(primary_key)
+				predmet = dao.get_predmet_by_pk(primary_key)
+				predmet.razredi.sort(key=lambda razred: razred.godina)
+				return predmet
 		except:
 			return None
 		finally:
 			DAOManager.release(dao)
 
 	@staticmethod
-	def set_razreds_to_predmet(predmet, *razredi):
-		for razred in razredi:
-			check_type(razred, int)
-		razredi = list(set(razredi))
+	def add_predmet_razred_relation(predmet, godina):
 		daos = { 'predmet': None, 'razred': None }
 		try:
 			with session_scope() as session:
 				daos['predmet'] = DAOManager.get_predmet_dao(session)
 				daos['razred'] = DAOManager.get_razred_dao(session)
-				for razred in razredi:
-					daos['predmet'].add_razred_to_predmet(predmet, 
-						daos['razred'].get_razred_by_godina(razred))
-				razredi_to_remove = []
-				for razred_obj in predmet.razredi:
-					if razred_obj.godina not in razredi:
-						razredi_to_remove.append(razred_obj)
-				for razred_to_remove in razredi_to_remove:
-					daos['predmet'].remove_razred_predmet_relation(predmet, razred_to_remove)
+				razred = daos['razred'].get_razred_by_godina(godina)
+				if razred in predmet.razredi:
+					raise UpdateInfoError('Predmet se vec slusa u unetom razredu')
+				daos['predmet'].add_razred_to_predmet(predmet, razred)
 			return True
+		except UpdateInfoError:
+			raise
 		except:
 			return False
 		finally:

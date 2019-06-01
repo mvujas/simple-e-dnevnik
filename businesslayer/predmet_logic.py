@@ -1,3 +1,4 @@
+from .exceptions import UpdateInfoError
 from dataaccesslayer import DAOManager
 from database import session_scope
 from models import Predmet
@@ -72,13 +73,17 @@ class PredmetLogic:
 				DAOManager.release(dao)
 
 	@staticmethod
-	def update_predmet_name(predmet, naziv):
+	def change_predmet_naziv(predmet, naziv):
 		dao = None
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_predmet_dao(session)
+				if dao.get_predmet_by_name(naziv) is not None:
+					raise UpdateInfoError('Vec postoji predmet sa unetim imenom')
 				dao.update_predmet_attribute(predmet, 'naziv', naziv)
 			return True
+		except UpdateInfoError:
+			raise
 		except:
 			return False
 		finally:

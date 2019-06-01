@@ -56,7 +56,21 @@ for p in predmeti.values():
 
 
 print(KorisnikLogic.get_korisnik_by_pk(2))
-'''
+
 from views import PredmetList
 
 PredmetList()
+'''
+from dataaccesslayer import DAOManager
+
+with session_scope() as session:
+	dao_p = DAOManager.get_predmet_dao(session)
+
+	profesori = KorisnikLogic.get_all_profesor()
+
+	print(profesori)
+
+	p = profesori[5]
+
+	print(dao_p.get_all_predmet_connected_with_the_profesor(p))
+	print(dao_p.get_all_predmet_not_connected_with_the_profesor(p))

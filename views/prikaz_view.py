@@ -4,18 +4,23 @@ from abc import ABC, abstractmethod
 
 class ListAllView(ABC):
 	list_sortings = {}
-	__current_sorting = None
 	list_heading = ''
 	table_mapping = [] # table_mapping should be list of tupples (column heading, column mapping[entry -> string])
 	akcije = []
+	prikaz_pojedinacnog = None
 
 	def __init__(self):
 		assert len(self.table_mapping) > 0
+		self.__current_sorting = None
 		if self.__current_sorting is None and 'default' in self.list_sortings:
 			self.__current_sorting = 'default'
+		self.akcije = self.akcije[:]
+		if self.prikaz_pojedinacnog is not None:
+			self.akcije.insert(0, ('Prikaz pojedinacnog', self.prikaz_pojedinacnog_unos))
 		if len(self.list_sortings) > 0:
 			self.akcije.insert(0, ('Izmeni sortiranje', self.promena_sortiranja))
 		self.loop()
+		self.list_entries_dict = None
 
 	@abstractmethod
 	def list_supplier(self): # should return dictionary where keys are primary keys and values objects
@@ -26,12 +31,12 @@ class ListAllView(ABC):
 			clear_screen()
 			print(self.list_heading)
 
-			list_entries_dict = self.list_supplier()
-			if list_entries_dict is None:
+			self.list_entries_dict = self.list_supplier()
+			if self.list_entries_dict is None:
 				print('Doslo je do greske prilikom ucitavanja podataka!')
 				input()
 				return
-			list_entries = list(list_entries_dict.values())
+			list_entries = list(self.list_entries_dict.values())
 			if self.__current_sorting is not None:
 				sorting = self.list_sortings[self.__current_sorting]
 				sorting_key = sorting[0]
@@ -98,3 +103,17 @@ _______ Moguci metodi sortiranja _______
 					print(f'Metod sortiranja liste je uspesno promenjen na "{izabran_metod}"')
 					input()
 					return
+
+	def prikaz_pojedinacnog_unos(self):
+		id_trazenog_str = input('ID Objekta: ').strip()
+		if not id_trazenog_str.isdigit():
+			print(' * ID mora biti broj')
+			input()
+		else:
+			id_trazenog = int(id_trazenog_str)
+			if id_trazenog not in self.list_entries_dict:
+				print(' * Ne postoji objekat sa trazenim ID-om')
+				input()
+			else:
+				entity = self.list_entries_dict[id_trazenog]
+				self.prikaz_pojedinacnog.__func__(entity)

@@ -53,4 +53,3 @@ class KorisnikPanel(ABC):
 				print('Nevalidna vrednost akcije')
 			else:
 				self.ACTION_DICTIONARY[action_num][1](self.korisnik)
-		input('Kliknite ENTER za povratak na panel...')

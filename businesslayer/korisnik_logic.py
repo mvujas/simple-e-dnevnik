@@ -106,7 +106,41 @@ class KorisnikLogic:
 			return None
 		finally:
 			DAOManager.release(dao)
-			
+	
+	@staticmethod
+	def change_ime(korisnik, ime):
+		ime = ime.strip()
+		dao = None
+		try:
+			KorisnikLogic.validate_name('ime', ime)
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				dao.update_korisnik_attribute(korisnik, 'ime', ime)
+			return True
+		except InvalidKorisnikInfoError:
+			raise
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)
+
+	@staticmethod
+	def change_prezime(korisnik, prezime):
+		prezime = prezime.strip()
+		dao = None
+		try:
+			KorisnikLogic.validate_name('prezime', prezime)
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				dao.update_korisnik_attribute(korisnik, 'prezime', prezime)
+			return True
+		except InvalidKorisnikInfoError:
+			raise
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)
+
 	@staticmethod
 	def change_username(korisnik, new_username):
 		new_username = new_username.strip()
@@ -182,17 +216,31 @@ class KorisnikLogic:
 			DAOManager.release(dao)
 
 	@staticmethod
-	def get_all_korisnik():
-		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik())
-
-	@staticmethod
 	def get_all_ucenik():
-		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Ucenik))
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_ucenik())
 
 	@staticmethod
 	def get_all_profesor():
-		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Profesor))
+		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_profesor())
 
 	@staticmethod
-	def get_all_admin():
-		return KorisnikLogic.__get_all_korisnik(lambda dao: dao.get_all_korisnik_from_subclass(Admin))	
+	def __get_korisnik_by_pk(korisnik_dao_call, primary_key):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				return korisnik_dao_call(dao, primary_key)
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)
+
+	@staticmethod
+	def get_profesor_by_pk(primary_key):
+		return KorisnikLogic.__get_korisnik_by_pk(
+			lambda dao, id: dao.get_profesor_by_pk(id), primary_key)
+
+	@staticmethod
+	def get_ucenik_by_pk(primary_key):
+		return KorisnikLogic.__get_korisnik_by_pk(
+			lambda dao, id: dao.get_ucenik_by_pk(id), primary_key)

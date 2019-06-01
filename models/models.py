@@ -147,8 +147,8 @@ class Predmet(Base):
 
 	id = Column(Integer)
 	naziv = Column(String(50), nullable=False)
-	profesori = relationship('Profesor', secondary='predaje', lazy='subquery')
-	razredi = relationship('Razred', secondary='dozvoljenirazredi', lazy='subquery')
+	profesori = relationship('Profesor', secondary='predaje')
+	razredi = relationship('Razred', secondary='dozvoljenirazredi')
 
 	__table_args__ = (
 		PrimaryKeyConstraint(id),
@@ -160,6 +160,15 @@ class Predmet(Base):
 		self.razredi = []
 		self.naziv = naziv
 
+	def __eq__(self, obj):
+		if self is obj:
+			return True
+		if obj is None:
+			return False
+		if not isinstance(obj, Predmet):
+			return False
+		return self.id == obj.id
+
 	def __repr__(self):
 		return f'<Predmet(id={self.id}, naziv={self.naziv})>'
 
@@ -169,8 +178,8 @@ class DozvoljeniRazredi(Base):
 
 	razred_id = Column(Integer)
 	predmet_id = Column(Integer)
-	razred = relationship('Razred', lazy='joined')
-	predmet = relationship('Predmet', lazy='joined')
+	razred = relationship('Razred')
+	predmet = relationship('Predmet')
 
 	__table_args__ = (
 		ForeignKeyConstraint([razred_id], [Razred.id]),
@@ -242,6 +251,7 @@ class Ocena(Base):
 	ocena_id = Column(Integer)
 	datum = Column(Date, default=datetime.datetime.now)
 	vrednost = Column(Integer, nullable=False)
+	slusa = relationship('Slusa', lazy='joined')
 
 	__table_args__ = (
 		ForeignKeyConstraint([slusa_ucenik_id, slusa_predmet_id], [Slusa.ucenik_id, Slusa.predmet_id]), # add on delete cascade

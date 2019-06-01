@@ -4,7 +4,7 @@ import getpass
 
 def try_again():
 	return input('Zelite li da pokusate ponovo? [D/n] ').strip().upper() not in ['N', 'NE']
-
+	
 
 def change_username(korisnik):
 	while True:
@@ -17,6 +17,7 @@ def change_username(korisnik):
 				print('Uspesno ste promenili korisnicko ime')
 			else:
 				print('Doslo je do greske prilikom promene korisnickog imena, pokusajte kasnije')
+			input()
 			return
 		except InvalidKorisnikInfoError as e:
 			print(' * Greska:', e)
@@ -42,8 +43,15 @@ def change_password(korisnik):
 				print('Uspesno ste promenili lozinku')
 			else:
 				print('Doslo je do greske prilikom promene lozinke, pokusajte kasnije')
+			input()
 			return
 		except InvalidKorisnikInfoError as e:
 			print(' * Greska:', e)
 			if not try_again():
 				return
+
+def dozvoljeni_razredi_str(predmet):
+	razredi = ', '.join(map(lambda razred: str(razred.godina), predmet.razredi))
+	if len(razredi) == 0:
+		razredi = '/'
+	return razredi		

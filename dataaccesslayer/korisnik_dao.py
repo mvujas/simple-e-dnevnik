@@ -1,5 +1,6 @@
 from models import Korisnik, Admin, Ucenik, Profesor, Razred
 from sqlalchemy import inspect
+from sqlalchemy.orm import joinedload
 from .general_dao import GeneralDAO
 from utils import check_type
 
@@ -21,17 +22,24 @@ class KorisnikDAO(GeneralDAO):
 	def get_all_korisnik(self):
 		return self.session.query(Korisnik).all()
 
+	def get_all_ucenik(self):
+		return self.session.query(Ucenik).options(joinedload(Ucenik.razred)).all()
+
+	def get_all_profesor(self):
+		return self.session.query(Profesor).options(joinedload(Profesor.predmeti)).all()
+
 	def get_all_ucenik_from_razred(self, razred):
 		check_type(razred, Razred)
-		return self.session.query(Ucenik).filter(Ucenik.razred_id == razred.id).all()
+		return self.session.query(Ucenik).options(joinedload(Ucenik.razred)).filter(Ucenik.razred_id == razred.id).all()
+
+	def get_ucenik_by_pk(self, primary_key):
+		return self.session.query(Ucenik).options(joinedload(Ucenik.razred)).get(primary_key)
+
+	def get_profesor_by_pk(self, primary_key):
+		return self.session.query(Profesor).options(joinedload(Profesor.predmeti)).get(primary_key)
 
 	def update_korisnik_attribute(self, korisnik, attribute, new_value):
 		check_type(korisnik, Korisnik)
 		if inspect(korisnik).detached:
 			self.session.add(korisnik)
 		setattr(korisnik, attribute, new_value)
-
-	def get_all_korisnik_from_subclass(self, subclass):
-		if not issubclass(subclass, Korisnik):
-			return ValueError('Passed class must be subclass of Korisnik')
-		return self.session.query(subclass).all()

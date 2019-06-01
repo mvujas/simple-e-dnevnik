@@ -1,0 +1,2 @@
+class UpdateInfoError(Exception):
+	pass

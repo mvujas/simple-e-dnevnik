@@ -99,3 +99,21 @@ class PredmetLogic:
 			return False
 		finally:
 			DAOManager.release(dao)		
+
+	@staticmethod
+	def get_predmets_avaliable_to_ucenik(ucenik):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				predmeti = dao.get_predmets_avaliable_to_ucenik(ucenik)
+				if predmeti is None:
+					return None
+				predmeti = list(filter(lambda predmet: len(predmet.profesori) > 0, predmeti))
+			return predmeti
+		except UpdateInfoError:
+			raise
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)	

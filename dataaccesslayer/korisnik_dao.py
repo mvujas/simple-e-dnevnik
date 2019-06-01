@@ -1,5 +1,5 @@
 from models import *
-from sqlalchemy import inspect
+from sqlalchemy import inspect, and_
 from sqlalchemy.orm import joinedload
 from .general_dao import GeneralDAO
 from utils import check_type
@@ -48,3 +48,49 @@ class KorisnikDAO(GeneralDAO):
 		check_type(profesor, Profesor)
 		check_type(predmet, Predmet)
 		self.session.add(Predaje(profesor, predmet))
+
+	def add_predmet_to_ucenik(self, ucenik, predmet, profesor):
+		check_type(ucenik, Ucenik)
+		check_type(predmet, Predmet)
+		check_type(profesor, Profesor)
+		self.session.add(Slusa(ucenik, predmet, profesor))
+
+	def get_uceniks_slusa(self, ucenik):
+		check_type(ucenik, Ucenik)
+		return self.session.query(Slusa).filter(Slusa.ucenik_id == ucenik.id).all()
+
+	def does_slusa_exists(self, ucenik, predmet):
+		check_type(ucenik, Ucenik)
+		check_type(predmet, Predmet)
+		return (
+			self.session.query(Slusa).filter(
+				and_(
+					Slusa.predmet_id == predmet.id,
+					Slusa.ucenik_id == ucenik.id
+				)
+			).first() is not None
+		)
+
+	def get_profesors_predmets_slusa(self, predmet, profesor):
+		check_type(predmet, Predmet)
+		check_type(profesor, Profesor)
+		return (
+			self.session.query(Slusa).filter(
+				and_(
+					Slusa.predaje_predmet_id == predmet.id,
+					Slusa.predaje_profesor_id == profesor.id
+				)
+			).all()
+		)
+
+	def get_predaje(self, predmet, profesor):
+		check_type(predmet, Predmet)
+		check_type(profesor, Profesor)
+		return (
+			self.session.query(Predaje).filter(
+				and_(
+					Predaje.predmet_id == predmet.id,
+					Predmet.profesor_id == profesor.id
+				)
+			).first()
+		)

@@ -1,4 +1,4 @@
-from models import Predmet, Razred, DozvoljeniRazredi, Profesor, Predaje
+from models import *
 from sqlalchemy import inspect, and_, func
 from sqlalchemy.orm import joinedload
 from .general_dao import GeneralDAO
@@ -73,3 +73,32 @@ class PredmetDAO(GeneralDAO):
 			else:
 				self.session.add(predmet)
 		setattr(predmet, attribute, new_value)
+
+	def __get_predmet_ids_in_uceniks_slusa(self, ucenik):
+		check_type(ucenik, Ucenik)
+		return (
+			self.session
+			.query(Slusa.predmet_id)
+			.filter(Slusa.ucenik_id == ucenik.id)
+			.all()
+		)
+
+	def get_predmets_avaliable_to_ucenik(self, ucenik):
+		check_type(ucenik, Ucenik)
+		not_targeted_ids = list(map(lambda id: id[0], self.__get_predmet_ids_in_uceniks_slusa(ucenik)))
+		return (
+			self.session
+			.query(Predmet)
+			.distinct(Predmet.id)
+			.options(joinedload(Predmet.profesori))
+			.join(DozvoljeniRazredi)
+			.filter(
+				and_(
+					and_(
+						Predmet.id == DozvoljeniRazredi.predmet_id,
+						DozvoljeniRazredi.razred_id == ucenik.razred_id
+					),
+					Predmet.id.notin_(not_targeted_ids)
+				)
+			).all()
+		)

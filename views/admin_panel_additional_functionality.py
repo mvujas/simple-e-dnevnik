@@ -124,3 +124,42 @@ def dodavanje_predmeta_profesoru(profesor):
 			print(' * Greska:', e)
 	input()
 
+def dodavanje_slusa_uceniku(ucenik):
+	moguci_predmeti = PredmetLogic.get_predmets_avaliable_to_ucenik(ucenik)
+	if moguci_predmeti is None:
+		print(' * Predmeti se ne mogu ucitati')
+	elif len(moguci_predmeti) == 0:
+		print(' * Ne postoje predmeti koje ucenik moze vise da slusa')
+	else:
+		predmeti_str = ', '.join(map(lambda predmet: predmet.naziv, moguci_predmeti))
+		print('Predmeti koje ucenik moze da slusa:', predmeti_str)
+		naziv_predmeta = pretty_text_format(input('Naziv predmeta: ')).lower()
+		predmet = next(iter(
+			filter(lambda predmet: predmet.naziv.lower() == naziv_predmeta, moguci_predmeti))
+		, None)
+		if predmet is None:
+			print(' * Ne postoji predmet sa unetim imenom')
+		else:
+			print('Profesori koji predaju dati predmet: ')
+			for profesor in predmet.profesori:
+				print(f' {profesor.id}) {profesor.ime} {profesor.prezime}')
+			id_profesora_txt = input('ID profesora: ').strip()
+			if not id_profesora_txt.isdigit():
+				print(' * ID Profesora mora biti broj')
+			else:
+				id_profesora = int(id_profesora_txt)
+				profesor = next(iter(
+					filter(lambda profesor: profesor.id == id_profesora, predmet.profesori))
+				, None)
+				if profesor is None:
+					print(' * Ne postoji profesor pod unetim ID-om')
+				else:
+					try:
+						if KorisnikLogic.add_slusa(ucenik, predmet, profesor):
+							print('Uspesno ste dodelili profesora i predmet uceniku')
+						else:
+							print(' * Doslo je do greske prilikom povezivanja ucenika i predmeta')
+					except UpdateInfoError as e:
+						print(' * Greska:', e)
+	input()
+

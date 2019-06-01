@@ -259,3 +259,34 @@ class KorisnikLogic:
 			return False
 		finally:
 			DAOManager.release(dao)
+
+	@staticmethod
+	def add_slusa(ucenik, predmet, profesor):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				if profesor not in predmet.profesori:
+					raise UpdateInfoError('Profesor ne predaje uneti predmet')
+				if dao.does_slusa_exists(ucenik, predmet):
+					raise UpdateInfoError('Ucenik vec slusa dati predmet')
+				dao.add_predmet_to_ucenik(ucenik, predmet, profesor)
+			return True
+		except UpdateInfoError:
+			raise
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)
+
+	@staticmethod
+	def get_uceniks_slusa(ucenik):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				return dao.get_uceniks_slusa(ucenik)
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)

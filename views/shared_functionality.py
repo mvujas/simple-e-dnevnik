@@ -61,3 +61,9 @@ def predmeti_profesora_str(profesor):
 	if len(predmeti) == 0:
 		predmeti = '/'
 	return predmeti
+
+def predmeti_ucenika_str(slusas):
+	predmeti = ', '.join(map(lambda slusa: slusa.predmet.naziv, slusas))
+	if len(predmeti) == 0:
+		predmeti = '/'
+	return predmeti

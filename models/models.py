@@ -211,7 +211,7 @@ class Predaje(Base):
 
 	profesor_id = Column(Integer)
 	predmet_id = Column(Integer)
-	profesor = relationship('Profesor')
+	profesor = relationship('Profesor', lazy='joined')
 	predmet = relationship('Predmet')
 
 	__table_args__ = (
@@ -246,6 +246,10 @@ class Slusa(Base):
 	predmet_id = Column(Integer)
 	predaje_profesor_id = Column(Integer)
 	predaje_predmet_id = Column(Integer)
+	ucenik = relationship('Ucenik', lazy='joined')
+	predmet = relationship('Predmet', lazy='joined')
+	predaje = relationship('Predaje', lazy='joined')
+	ocene = relationship('Ocena', back_populates='slusa', lazy='joined')
 
 	__table_args__ = (
 		ForeignKeyConstraint([ucenik_id], [Ucenik.id]), # add on delete cascade
@@ -254,6 +258,12 @@ class Slusa(Base):
 		PrimaryKeyConstraint(ucenik_id, predmet_id),
 		{}
 	)
+
+	def __init__(self, ucenik, predmet, profesor):
+		self.ucenik_id = ucenik.id
+		self.predmet_id = predmet.id
+		self.predaje_predmet_id = predmet.id
+		self.predaje_profesor_id = profesor.id
 
 	def __repr__(self):
 		return f'<Slusa()>'
@@ -267,7 +277,16 @@ class Ocena(Base):
 	ocena_id = Column(Integer)
 	datum = Column(Date, default=datetime.datetime.now)
 	vrednost = Column(Integer, nullable=False)
-	slusa = relationship('Slusa', lazy='joined')
+	slusa = relationship('Slusa', back_populates='ocene', lazy='joined')
+
+	def __init__(self, vrednost, ucenik, predmet):
+		self.vrednost = vrednost
+		self.ucenik_id = ucenik.id
+		self.predmet_id = predmet.id
+
+	def __init__(self, vrednost, slusa):
+		self.vrednost = vrednost
+		self.slusa = slusa
 
 	__table_args__ = (
 		ForeignKeyConstraint([slusa_ucenik_id, slusa_predmet_id], [Slusa.ucenik_id, Slusa.predmet_id]), # add on delete cascade
@@ -276,4 +295,4 @@ class Ocena(Base):
 	)
 
 	def __repr__(self):
-		return f'<Ocena()>'
+		return f'<Ocena(vrednost={vrednost})>'

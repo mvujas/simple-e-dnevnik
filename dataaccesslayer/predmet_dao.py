@@ -39,11 +39,12 @@ class PredmetDAO(GeneralDAO):
 	def get_all_predmet_connected_with_the_profesor(self, profesor):
 		check_type(profesor, Profesor)
 		assert profesor.id != None
+		predmet_ids = list(map(lambda id: id[0], self.__get_all_predmet_ids_connected_with_profesor(profesor)))
 		return (
 			self.session
 			.query(Predmet)
 			.filter(
-				Predmet.id.in_(self.__get_all_predmet_ids_connected_with_profesor(profesor))
+				Predmet.id.in_(predmet_ids)
 			)
 			.all()
 		)
@@ -102,3 +103,7 @@ class PredmetDAO(GeneralDAO):
 				)
 			).all()
 		)
+
+	def add_ocena(self, ocena):
+		check_type(ocena, Ocena)
+		self.session.add(ocena)

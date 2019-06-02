@@ -1,4 +1,5 @@
 from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
+from prettytable import PrettyTable
 from utils import clear_screen
 import getpass
 
@@ -67,3 +68,25 @@ def predmeti_ucenika_str(slusas):
 	if len(predmeti) == 0:
 		predmeti = '/'
 	return predmeti
+
+def ocene_ucenika_tabela(slusas):
+	if slusas is None:
+		return 'Podaci od predmetima se ne mogu pribaviti'
+	table = PrettyTable(['PREDMET', 'PREDMETNI NASTAVNIK', 'OCENE', 'SREDNJA OCENA'])
+	for slusa in slusas:
+		novi_red = [slusa.predmet.naziv]
+		if slusa.predaje is None:
+			novi_red.append('/')
+		else:
+			novi_red.append(f'{slusa.predaje.profesor.ime} {slusa.predaje.profesor.prezime}')
+		if len(slusa.ocene) == 0:
+			novi_red.append('/')
+			novi_red.append('/')
+		else:
+			ocene = list(map(lambda ocena: ocena.vrednost, slusa.ocene))
+			ocene_str = ', '.join(map(str, ocene))
+			srednja_ocena = sum(ocene) / len(ocene)
+			novi_red.append(ocene_str)
+			novi_red.append(srednja_ocena)
+		table.add_row(novi_red)
+	return str(table)

@@ -2,6 +2,7 @@ from businesslayer import PredmetLogic, KorisnikLogic
 from .prikaz_view import ListAllView
 from .shared_functionality import dozvoljeni_razredi_str, predmeti_profesora_str
 from .entity_views import AdminPredmetView, AdminProfesorView, AdminUcenikView
+from utils import avg
 
 class AdminPredmetList(ListAllView):
 	list_heading = ' === Prikaz svih predmeta ==='
@@ -52,3 +53,36 @@ class AdminProfesorList(ListAllView):
 
 	def list_supplier(self):
 		return KorisnikLogic.get_all_profesor()
+
+class ProfesorPredmetList(ListAllView):
+	list_heading = ''
+	table_mapping = [
+		('ID', lambda predmet: predmet.id),
+		('NAZIV', lambda predmet: predmet.naziv),
+	]
+	list_sorting = {
+		'default': (lambda predmet: predmet.id, False),
+	}
+	prikaz_pojedinacnog = None
+
+	def list_supplier(self):
+		pass
+
+class ProfesorPredmetSlusasList(ListAllView):
+	list_heading = ''
+	table_mapping = [
+		('ID', lambda slusa: slusa.ucenik.id),
+		('IME', lambda slusa: f'{slusa.ucenik.ime} {slusa.ucenik.prezime}'),
+		('RAZRED', lambda slusa: slusa.ucenik.razred.godina),
+		('OCENE', lambda slusa: ', '.join(list(map(lambda ocena: str(ocena.vrednost), slusa.ocene)))\
+						if len(slusa.ocene) > 0 else '/'),
+		('SREDNJA OCENA', lambda slusa: avg(list(map(lambda ocena: str(ocena.vrednost), slusa.ocene)))\
+						if len(slusa.ocene) > 0 else '/')
+	]
+	list_sorting = {
+		'default': (lambda slusa: slusa.ucenik.id, False),
+	}
+	prikaz_pojedinacnog = None
+
+	def list_supplier(self):
+		pass

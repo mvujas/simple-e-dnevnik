@@ -179,19 +179,31 @@ class KorisnikLogic:
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				return dao.get_korisnik_by_username(username)
+				korisnik = dao.get_korisnik_by_username(username)
+				if korisnik is not None:
+					session.refresh(korisnik)
+					return korisnik
+				else:
+					return None
 		except:
 			return None
 		finally:
 			DAOManager.release(dao)
 
 	@staticmethod
-	def get_korisnik_by_pk(primary_key): # doesn't work with subclasses of korisnik...
+	def get_korisnik_by_pk(primary_key): 
+	# Ispostavilo se da fali session.refresh da bi radilo sa ostalim podklasama od korisnika (sto sam shvatio tek pri kraju pisanja programa)
+	# ali posto se njihove pojedinacne metode vec koriste u velikom delu programa ostavicu tako da ne bih napravio slucajno neki bug
 		dao = None
 		try:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
-				return dao.get_korisnik_by_pk(primary_key)
+				korisnik = dao.get_korisnik_by_pk(primary_key)
+				if korisnik is not None:
+					session.refresh(korisnik)
+					return korisnik
+				else:
+					return None
 		except:
 			return None
 		finally:
@@ -286,6 +298,19 @@ class KorisnikLogic:
 			with session_scope() as session:
 				dao = DAOManager.get_korisnik_dao(session)
 				return dao.get_uceniks_slusa(ucenik)
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)
+
+	@staticmethod
+	def get_profesors_predmets_slusa(predmet, profesor):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				slusas = dao.get_profesors_predmets_slusa(predmet, profesor)
+				return slusas
 		except:
 			return None
 		finally:

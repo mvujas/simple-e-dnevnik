@@ -117,3 +117,41 @@ class PredmetLogic:
 			return None
 		finally:
 			DAOManager.release(dao)	
+
+	@staticmethod
+	def add_ocena(ucenik, predmet, vrednost_ocene):
+		check_type(ucenik, Ucenik)
+		check_type(predmet, Predmet)
+		if not isinstance(vreddnost_ocene, int) or vrednost_ocene < 1 or vrednost_ocene > 5:
+			raise ValueError('vrednost_ocene is out of predefined domain')
+		daos = {'korisnik': None, 'predmet': None}
+		try:
+			with session_scope() as session:
+				daos['korisnik'] = DAOManager.get_korisnik_dao(session)
+				daos['predmet'] = DAOManager.get_predmet_dao(session)
+				slusa = daos['korisnik'].get_uceniks_predmets_slusa(ucenik, predmet)
+				if slusa is None:
+					raise UpdateInfoError('Ucenik ne slusa uneti predmet')
+				ocena = Ocena(vrednost_ocene, slusa)
+				daos['predmet'].add_ocena(ocena)
+				return True
+		except UpdateInfoError:
+			raise
+		except:
+			return False
+		finally:
+			for dao in daos.values():
+				DAOManager.release(dao)	
+
+	@staticmethod
+	def get_profesors_predmets(profesor):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				predmeti = dao.get_all_predmet_connected_with_the_profesor(profesor)
+				return {predmet.id: predmet for predmet in predmeti}
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)

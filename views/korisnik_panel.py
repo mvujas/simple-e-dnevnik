@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from utils import clear_screen
 from .shared_functionality import change_username, change_password
+from businesslayer import KorisnikLogic
 
 class KorisnikPanel(ABC):
 	# ACTION_DICTIONARY should be a list of (action name, action callback) pairs
@@ -12,12 +13,14 @@ class KorisnikPanel(ABC):
 
 	__STARTING_ACTION_NUMBER = 1
 
-	def __init__(self, korisnik):
-		self.korisnik = korisnik
+	def __init__(self, korisnik_id):
+		self.korisnik_id = korisnik_id
+		self.korisnik = None
 		self.loop()
 
 	def loop(self):
 		while True:
+			self.korisnik = KorisnikLogic.get_korisnik_by_pk(self.korisnik_id)
 			clear_screen()
 			print(self.panel_heading)
 			print()

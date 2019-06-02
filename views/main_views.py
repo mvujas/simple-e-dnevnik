@@ -40,10 +40,10 @@ def korisnicki_panel(korisnik):
 
 	if isinstance(korisnik, Admin):
 		from .admin_views import AdminPanel
-		AdminPanel(korisnik)
+		AdminPanel(korisnik.id)
 	elif isinstance(korisnik, Ucenik):
 		from .ucenik_views import UcenikPanel
-		UcenikPanel(korisnik)
+		UcenikPanel(korisnik.id)
 	elif isinstance(korisnik, Profesor):
 		from .profesor_views import ProfesorPanel
-		ProfesorPanel(korisnik)
+		ProfesorPanel(korisnik.id)

@@ -59,7 +59,7 @@ class KorisnikDAO(GeneralDAO):
 		check_type(ucenik, Ucenik)
 		return self.session.query(Slusa).filter(Slusa.ucenik_id == ucenik.id).all()
 
-	def does_slusa_exists(self, ucenik, predmet):
+	def get_uceniks_predmets_slusa(self, ucenik, predmet):
 		check_type(ucenik, Ucenik)
 		check_type(predmet, Predmet)
 		return (
@@ -68,8 +68,11 @@ class KorisnikDAO(GeneralDAO):
 					Slusa.predmet_id == predmet.id,
 					Slusa.ucenik_id == ucenik.id
 				)
-			).first() is not None
+			).first()
 		)
+
+	def does_slusa_exists(self, ucenik, predmet):
+		return self.get_uceniks_predmets_slusa(ucenik, predmet) is not None
 
 	def get_profesors_predmets_slusa(self, predmet, profesor):
 		check_type(predmet, Predmet)

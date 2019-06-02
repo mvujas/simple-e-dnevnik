@@ -36,6 +36,7 @@ def dodavanje_regularnog_korisnika(uloga):
 		try:
 			KorisnikLogic.register_user(**args)
 			print('{} je uspesno dodat'.format(uloga.title()))
+			input()
 			return
 		except InvalidKorisnikInfoError as e:
 			print(' * Greska:', e)
@@ -52,6 +53,7 @@ def dodavanje_predmeta():
 		success = PredmetLogic.add_predmet(naziv)
 		if success:
 			print('Predmet je uspesno dodat')
+			input()
 			return
 		else:
 			print('''\

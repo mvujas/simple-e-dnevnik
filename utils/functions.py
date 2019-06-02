@@ -9,3 +9,8 @@ def clear_screen():
 
 def pretty_text_format(text):
 	return ' '.join(text.strip().split())
+
+def avg(arr):
+	if len(arr) == 0:
+		raise ValueError('Cannot accept empty array')
+	return sum(arr) / len(arr)

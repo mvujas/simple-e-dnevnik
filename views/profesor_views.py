@@ -1,6 +1,5 @@
 from .korisnik_panel import KorisnikPanel
 from .profesor_panel_additional_functionality import *
-from .profesor_panel_additional_functionality import prikaz_predmeta_profesora
 
 class ProfesorPanel(KorisnikPanel):
 	ACTION_DICTIONARY = KorisnikPanel.ACTION_DICTIONARY + [

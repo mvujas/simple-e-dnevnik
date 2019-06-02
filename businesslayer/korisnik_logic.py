@@ -315,3 +315,16 @@ class KorisnikLogic:
 			return None
 		finally:
 			DAOManager.release(dao)
+
+	@staticmethod
+	def get_slusa_by_pk(ucenik_id, predmet_id):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_korisnik_dao(session)
+				slusa = dao.get_slusa_by_pk(ucenik_id, predmet_id)
+				return slusa
+		except:
+			return None
+		finally:
+			DAOManager.release(dao)

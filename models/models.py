@@ -1,4 +1,5 @@
-from database import Base
+from database import Base, session_scope
+from random import randint
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from sqlalchemy.schema import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
@@ -269,12 +270,23 @@ class Slusa(Base):
 		return f'<Slusa()>'
 
 
+from random import randint 
+
+def random_integer():
+	min_ = -1000000000
+	max_ = 1000000000
+	rand = randint(min_, max_)
+	with session_scope() as session:
+		while session.query(Ocena).filter(Ocena.ocena_id == rand).limit(1).first() is not None:
+			rand = randint(min_, max_)
+	return rand
+
 class Ocena(Base):
 	__tablename__ = 'ocena'
 
 	slusa_ucenik_id = Column(Integer)
 	slusa_predmet_id = Column(Integer)
-	ocena_id = Column(Integer)
+	ocena_id = Column(Integer, default=random_integer)
 	datum = Column(Date, default=datetime.datetime.now)
 	vrednost = Column(Integer, nullable=False)
 	slusa = relationship('Slusa', back_populates='ocene', lazy='joined')

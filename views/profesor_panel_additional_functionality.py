@@ -3,10 +3,13 @@ from utils import clear_screen, pretty_text_format
 from prettytable import PrettyTable
 from .shared_functionality import try_again
 from .list_views import ProfesorPredmetList, ProfesorPredmetSlusasList
+from .entity_views import ProfesorPanelSlusaView
 
 def prikaz_pojedinacnog_predmeta(profesor, predmet):
 	class CustomProfesorPredmetSlusasList(ProfesorPredmetSlusasList):
 		list_heading = f'Ucenici koji pohadjaju predmet {predmet.naziv} kod profesora {profesor.ime} {profesor.prezime}:'
+		prikaz_pojedinacnog = lambda slusa: ProfesorPanelSlusaView(
+				lambda: KorisnikLogic.get_slusa_by_pk(slusa.ucenik_id, slusa.predmet_id))
 
 		def list_supplier(self):
 			slusas = KorisnikLogic.get_profesors_predmets_slusa(predmet, profesor)

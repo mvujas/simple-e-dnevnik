@@ -1,7 +1,7 @@
 from .exceptions import UpdateInfoError
 from dataaccesslayer import DAOManager
 from database import session_scope
-from models import Predmet
+from models import *
 from utils import check_type
 
 class PredmetLogic:
@@ -119,10 +119,29 @@ class PredmetLogic:
 			DAOManager.release(dao)	
 
 	@staticmethod
+	def add_ocena_with_slusa(slusa, vrednost_ocene):
+		check_type(slusa, Slusa)
+		if not isinstance(vrednost_ocene, int) or vrednost_ocene < 1 or vrednost_ocene > 5:
+			raise ValueError('vrednost_ocene is out of predefined domain')
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				ocena = Ocena(vrednost_ocene, slusa)
+				dao.add_ocena(ocena)
+				return True
+		except UpdateInfoError:
+			raise
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)	
+
+	@staticmethod
 	def add_ocena(ucenik, predmet, vrednost_ocene):
 		check_type(ucenik, Ucenik)
 		check_type(predmet, Predmet)
-		if not isinstance(vreddnost_ocene, int) or vrednost_ocene < 1 or vrednost_ocene > 5:
+		if not isinstance(vrednost_ocene, int) or vrednost_ocene < 1 or vrednost_ocene > 5:
 			raise ValueError('vrednost_ocene is out of predefined domain')
 		daos = {'korisnik': None, 'predmet': None}
 		try:

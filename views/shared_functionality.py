@@ -1,6 +1,6 @@
 from businesslayer import KorisnikLogic, InvalidKorisnikInfoError
 from prettytable import PrettyTable
-from utils import clear_screen
+from utils import clear_screen, avg
 import getpass
 
 def try_again():
@@ -69,6 +69,16 @@ def predmeti_ucenika_str(slusas):
 		predmeti = '/'
 	return predmeti
 
+def ocene_odvojene_zarezom(ocene):
+	if len(ocene) == 0:
+		return '/'
+	return ', '.join(list(map(lambda ocena: str(ocena.vrednost), ocene)))
+
+def srednja_vrednost_ocena(ocene):
+	if len(ocene) == 0:
+		return '/'
+	return format(avg(list(map(lambda ocena: ocena.vrednost, ocene))), '.2f')
+
 def ocene_ucenika_tabela(slusas):
 	if slusas is None:
 		return 'Podaci od predmetima se ne mogu pribaviti'
@@ -79,14 +89,7 @@ def ocene_ucenika_tabela(slusas):
 			novi_red.append('/')
 		else:
 			novi_red.append(f'{slusa.predaje.profesor.ime} {slusa.predaje.profesor.prezime}')
-		if len(slusa.ocene) == 0:
-			novi_red.append('/')
-			novi_red.append('/')
-		else:
-			ocene = list(map(lambda ocena: ocena.vrednost, slusa.ocene))
-			ocene_str = ', '.join(map(str, ocene))
-			srednja_ocena = sum(ocene) / len(ocene)
-			novi_red.append(ocene_str)
-			novi_red.append(srednja_ocena)
+		novi_red.append(ocene_odvojene_zarezom(slusa.ocene))
+		novi_red.append(srednja_vrednost_ocena(slusa.ocene))
 		table.add_row(novi_red)
 	return str(table)

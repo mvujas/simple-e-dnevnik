@@ -97,3 +97,15 @@ class KorisnikDAO(GeneralDAO):
 				)
 			).first()
 		)
+
+	def get_slusa_by_pk(self, ucenik_id, predmet_id):
+		check_type(ucenik_id, int)
+		check_type(predmet_id, int)
+		return (
+			self.session.query(Slusa).filter(
+				and_(
+					Slusa.ucenik_id == ucenik_id,
+					Slusa.predmet_id == predmet_id
+				)
+			).first()
+		)

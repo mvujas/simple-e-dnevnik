@@ -84,9 +84,25 @@ def dodavanje_ocene(slusa):
 				print(' * Greska:', e)
 	input()
 
+def brisanje_najskorije_ocene(slusa):
+	if slusa.ocene is None or len(slusa.ocene) == 0:
+		print('Ucenik nema ocena iz datog predmeta')
+		input()
+		return
+	izbor = input('''\
+Da li ste sigurni da zelite da izbrisete\
+ najskoriju ocena datog ucenika iz ovog predmeta? [d/n] ''').strip().upper()
+	if izbor in ['D', 'DA']:
+		if PredmetLogic.delete_latest_ocena(slusa):
+			print('Najskorija ocena je uspesno izbrisana')
+		else:
+			print(' * Doslo je do greske prilikom brisanja ocene')
+		input()
+
 class ProfesorPanelSlusaView(EntityView):
 	heading = ' === Prikaz podataka ucenika za predmet ==='
 	entity_info_function = informacije_o_slusa
 	ACTION_DICTIONARY = [
 		('Dodaj ocenu', dodavanje_ocene),
+		('Obrisi najskoriju ocenu', brisanje_najskorije_ocene),
 	]

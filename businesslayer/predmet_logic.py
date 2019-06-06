@@ -174,3 +174,16 @@ class PredmetLogic:
 			return None
 		finally:
 			DAOManager.release(dao)
+
+	@staticmethod
+	def delete_latest_ocena(slusa):
+		dao = None
+		try:
+			with session_scope() as session:
+				dao = DAOManager.get_predmet_dao(session)
+				dao.delete_latest_ocena(slusa)
+			return True
+		except:
+			return False
+		finally:
+			DAOManager.release(dao)

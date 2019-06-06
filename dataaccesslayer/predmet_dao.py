@@ -107,3 +107,21 @@ class PredmetDAO(GeneralDAO):
 	def add_ocena(self, ocena):
 		check_type(ocena, Ocena)
 		self.session.add(ocena)
+
+	def delete_latest_ocena(self, slusa):
+		check_type(slusa, Slusa)
+		ocena_id = self.session.query(Ocena.ocena_id).filter(
+			and_(
+				Ocena.slusa_ucenik_id == slusa.ucenik_id,
+				Ocena.slusa_predmet_id == slusa.predmet_id
+			)
+		).order_by(Ocena.datum.desc()).limit(1).first()
+		self.session.query(Ocena).filter(
+			and_(
+				and_(
+					Ocena.slusa_ucenik_id == slusa.ucenik_id,
+					Ocena.slusa_predmet_id == slusa.predmet_id
+				),
+				Ocena.ocena_id == ocena_id[0]
+			)
+		).delete()

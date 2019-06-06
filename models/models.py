@@ -1,7 +1,7 @@
 from database import Base, session_scope
 from random import randint
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.schema import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
 
 import datetime
@@ -287,7 +287,7 @@ class Ocena(Base):
 	slusa_ucenik_id = Column(Integer)
 	slusa_predmet_id = Column(Integer)
 	ocena_id = Column(Integer, default=random_integer)
-	datum = Column(Date, default=datetime.datetime.now)
+	datum = Column(DateTime, default=datetime.datetime.utcnow)
 	vrednost = Column(Integer, nullable=False)
 	slusa = relationship('Slusa', back_populates='ocene', lazy='joined')
 

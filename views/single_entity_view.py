@@ -1,6 +1,7 @@
 from utils import clear_screen
+from abc import ABC
 
-class EntityView:
+class EntityView(ABC):
 	heading = ''
 	entity_info_function = lambda entity: ''
 	ACTION_DICTIONARY = []
